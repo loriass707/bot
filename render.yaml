@@ -1,0 +1,39 @@
+# Render.com Blueprint — KYPTEAM Telegram boti.
+# Render → New → Blueprint → reponi tanlang: shu fayl o‘qiladi.
+# Maxfiy qiymatlar (BOT_TOKEN, ADMIN_IDS, ...) repoda saqlanmaydi:
+# ularni Render dashboardida bir marta kiritasiz (sync: false).
+services:
+  - type: web
+    name: kypteam-bot
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: python main.py
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: GROUP_INVITE_LINK
+        sync: false
+      - key: GROUP_CHAT_ID
+        sync: false
+      - key: DB_PATH
+        value: kypteam.db
+      - key: RETENTION_DAYS
+        value: "180"
+      - key: AUTO_ACCEPT_MIN
+        value: "55"
+      - key: QUIZ_TIME_SECONDS
+        value: "60"
+
+    # Doimiy saqlash (SQLite ma'lumotlari redeploydan keyin yo‘qolmasin):
+    # bepul planda Disk yo‘q, Starter plan kerak. Izohni ochib, DB_PATH ni ham
+    # /var/data/kypteam.db ga o‘zgartiring.
+    # disk:
+    #   name: kypteam-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
